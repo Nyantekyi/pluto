@@ -24,6 +24,31 @@ To make Pluto accessible to everyone, we use simplified terminology:
 
 That's it! No code writing needed.
 
+### 🔄 Return Value Behavior
+
+Pluto simplifies return values - you never need to write `return` statements!
+
+**Actions automatically return values:**
+- **Single value**: The last line is automatically returned
+- **Multiple values**: All variables you create are automatically returned together
+
+**Example:**
+```javascript
+// This action automatically returns the result
+action double(x) => [
+  x * 2;
+]
+
+// This action automatically returns an object with both values
+action splitName(fullName) => [
+  first = fullName.split(" ")[0];
+  last = fullName.split(" ")[1];
+]
+
+result = splitName("John Doe");
+// result = { first: "John", last: "Doe" }
+```
+
 ## 📋 Development Plan
 
 ### Phase 1: Core Interpreter Design
@@ -42,15 +67,25 @@ That's it! No code writing needed.
 x = 10;
 y = x + 5;
 
-// Check (conditional)
+// Check (conditional) - implicitly returns boolean
 check(x > 5) => print("x is greater than 5")
 
-// Action (function)
+// Action (function) - last expression is automatically returned
 action add(a, b) => [
-  return a + b;
+  a + b;
 ]
 
 result = add(10, 20);
+
+// Action with multiple values - use simplified variable names
+action calculate(a, b) => [
+  sum = a + b;
+  diff = a - b;
+  prod = a * b;
+]
+
+// Returns object with sum, diff, and prod properties
+results = calculate(10, 5);
 ```
 
 #### 1.2 Lexer (Tokenizer)
@@ -60,7 +95,7 @@ result = add(10, 20);
   - Identify keywords, identifiers, operators, literals, and symbols
   - Create token objects with type and value
 - **Token Types**: 
-  - Keywords (check, else, each, action, return)
+  - Keywords (check, else, each, action)
   - Identifiers (node/action names)
   - Literals (numbers, strings, booleans)
   - Operators (+, -, *, /, =, ==, !=, <, >, &&, ||, =>)
@@ -78,11 +113,11 @@ result = add(10, 20);
 - **AST Node Types**:
   - Program (root node)
   - NodeDeclaration (variable storage)
-  - ActionDeclaration (function-like blocks)
+  - ActionDeclaration (function-like blocks with implicit return)
   - ExpressionStatement
   - BinaryExpression
   - CallExpression
-  - CheckStatement (conditional)
+  - CheckStatement (conditional with implicit boolean return)
   - EachStatement (loop)
   - BlockStatement
 
@@ -96,13 +131,73 @@ result = add(10, 20);
   - Evaluate expressions and execute statements
   - Handle node scoping (lexical scoping)
   - Implement call stack for action calls
+  - Implicit return: last expression in action is automatically returned
+  - Multiple return values: collect all assigned variables in action body
 - **Features**:
   - Environment/Scope management
   - Built-in action library
   - Error handling and reporting
   - Execution limits (prevent infinite loops)
+  - Automatic return value handling for actions and checks
 
 **File**: `src/interpreter.js`
+
+#### 1.5 Return Value Behavior
+
+**Actions** and **Checks** automatically return values without explicit `return` statements:
+
+##### Single Value Return (Implicit)
+```javascript
+// The last expression is automatically returned
+action square(x) => [
+  x * x;
+]
+
+result = square(5);  // result = 25
+```
+
+##### Multiple Value Return
+When multiple variables are assigned within an action, they are automatically collected and returned as an object:
+
+```javascript
+action calculate(a, b) => [
+  sum = a + b;
+  diff = a - b;
+  prod = a * b;
+]
+
+results = calculate(10, 5);
+// results = { sum: 15, diff: 5, prod: 50 }
+```
+
+Variable names are used as-is from the action body. Use simplified, descriptive names:
+```javascript
+action stats(numbers) => [
+  total = sum(numbers);
+  avg = total / length(numbers);
+  max = maximum(numbers);
+  min = minimum(numbers);
+]
+
+data = stats([1, 2, 3, 4, 5]);
+// data = { total: 15, avg: 3, max: 5, min: 1 }
+```
+
+##### Check Return Values
+Checks automatically return boolean values:
+```javascript
+action isPositive(x) => [
+  check(x > 0) => true
+  else => false
+]
+
+// Simplified - the check itself returns the boolean
+action isEven(x) => [
+  x % 2 == 0;
+]
+
+result = isEven(4);  // result = true
+```
 
 ### Phase 2: Browser & Node.js Compatibility
 
@@ -288,6 +383,26 @@ const blocks = {
 
 **File**: `src/stdlib.js`
 
+**Example Built-in Action Implementations:**
+```javascript
+// Single return value
+action abs(x) => [
+  check(x < 0) => -x
+  else => x
+]
+
+// Multiple return values
+action minMax(arr) => [
+  min = minimum(arr);
+  max = maximum(arr);
+  range = max - min;
+]
+
+// Usage
+limits = minMax([1, 5, 3, 9, 2]);
+// limits = { min: 1, max: 9, range: 8 }
+```
+
 ### Phase 7: Development Tools
 
 #### 7.1 Debug Support
@@ -373,16 +488,18 @@ const blocks = {
 ## 🚀 Implementation Roadmap
 
 ### Milestone 1: Core Interpreter (Weeks 1-3)
-- [ ] Implement lexer with token recognition
+- [ ] Implement lexer with token recognition (no `return` keyword needed)
 - [ ] Build parser with AST generation
 - [ ] Create interpreter with basic evaluation
 - [ ] Add support for nodes (data storage), operators, and basic expressions
+- [ ] Implement implicit return for actions (last expression returned)
+- [ ] Implement multiple return values as objects for actions
 - [ ] Write unit tests for each component
 
 ### Milestone 2: Block Features (Weeks 4-5)
-- [ ] Add checks (decision-making blocks)
+- [ ] Add checks (decision-making blocks with implicit boolean return)
 - [ ] Add each loops (iteration blocks)
-- [ ] Implement actions (pre-defined operation blocks)
+- [ ] Implement actions (pre-defined operation blocks with implicit returns)
 - [ ] Add built-in action library
 - [ ] Implement proper scoping and environments
 - [ ] Add comprehensive error handling
