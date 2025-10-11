@@ -4,7 +4,7 @@ A simple, browser-compatible visual programming tool for creating custom executa
 
 ## 🎯 Project Overview
 
-Pluto is designed to be a lightweight, user-friendly visual programming tool that enables users to create and execute custom workflows within a Nuxt 4 application. **No programming knowledge required!** Users simply drag and drop predetermined blocks (actions, nodes, checks, and loops) onto a canvas, configure them with simple inputs, and execute their workflow.
+Pluto is designed to be a lightweight, user-friendly visual programming tool that enables users to create and execute custom workflows within a Nuxt 4 application. **No programming knowledge required!** Users simply drag and drop predetermined blocks (actions, nodes, checks, and each) onto a canvas, configure them with simple inputs, and execute their workflow.
 
 ### 🧩 Simplified Terminology
 
