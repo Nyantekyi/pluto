@@ -1,40 +1,58 @@
-# Pluto - Lightweight Language Interpreter
+# Pluto - Visual Workflow Builder
 
-A simple, browser-compatible JavaScript interpreter for creating custom executables within Nuxt 4 applications with drag-and-drop functionality.
+A simple, browser-compatible visual programming tool for creating custom executables within Nuxt 4 applications with drag-and-drop functionality.
 
 ## 🎯 Project Overview
 
-Pluto is designed to be a lightweight, user-friendly language interpreter that enables users to create and execute custom scripts within a Nuxt 4 JavaScript application. The interpreter prioritizes simplicity and ease of use, with a visual drag-and-drop interface for building custom executables.
+Pluto is designed to be a lightweight, user-friendly visual programming tool that enables users to create and execute custom workflows within a Nuxt 4 application. **No programming knowledge required!** Users simply drag and drop predetermined blocks (actions, nodes, checks, and loops) onto a canvas, configure them with simple inputs, and execute their workflow.
+
+### 🧩 Simplified Terminology
+
+To make Pluto accessible to everyone, we use simplified terminology:
+
+| What It Does | We Call It | Programming Term |
+|-------------|-----------|------------------|
+| Store a value | **Node** | Variable/Constant |
+| Perform an operation | **Action** | Function |
+| Make a decision | **Check** | If/Conditional |
+| Repeat for items | **Each** | For Loop |
+
+**Example**: To print "something" to the console:
+1. Drag the **Print action** block to the canvas
+2. Type "something" in the input field
+3. Click Execute
+
+That's it! No code writing needed.
 
 ## 📋 Development Plan
 
 ### Phase 1: Core Interpreter Design
 
-#### 1.1 Define the Language Syntax
-- **Simple Expression Language**: Support basic operations (arithmetic, logical, string manipulation)
-- **Variable Declaration and Assignment**: `let`, `const` keywords
-- **Control Flow**: `if/else`, `while`, `for` statements
-- **Functions**: Simple function declarations and calls
-- **Built-in Functions**: Pre-defined utility functions for common operations
-- **Comments**: Single-line (`//`) and multi-line (`/* */`) comments
+#### 1.1 Define the Block System
+- **Simple Operations**: Support basic operations (arithmetic, logical, string manipulation)
+- **Nodes (Data Storage)**: `var` keyword for storing values
+- **Checks (Conditions)**: `check` blocks for decision-making
+- **Each (Loops)**: `each` blocks for iterating over items
+- **Actions**: Pre-defined action blocks for common operations
+- **Built-in Actions**: Pre-configured utility actions
 
-**Example Syntax:**
+**Example Workflow:**
 ```javascript
-// Simple variable assignment
-let x = 10;
-let y = x + 5;
+// Simple node (variable) assignment
+var x = 10;
+var y = x + 5;
 
-// Control flow
-if (x > 5) {
+// Check (conditional)
+check (x > 5) {
   print("x is greater than 5");
 }
 
-// Functions
-function add(a, b) {
+// Action (function)
+action add(a, b) {
   return a + b;
 }
 
-let result = add(10, 20);
+var result = add(10, 20);
 ```
 
 #### 1.2 Lexer (Tokenizer)
@@ -44,8 +62,8 @@ let result = add(10, 20);
   - Identify keywords, identifiers, operators, literals, and symbols
   - Create token objects with type and value
 - **Token Types**: 
-  - Keywords (let, const, if, else, while, for, function, return)
-  - Identifiers (variable/function names)
+  - Keywords (var, check, else, each, action, return)
+  - Identifiers (node/action names)
   - Literals (numbers, strings, booleans)
   - Operators (+, -, *, /, =, ==, !=, <, >, &&, ||)
   - Punctuation (;, {, }, (, ), ,)
@@ -61,13 +79,13 @@ let result = add(10, 20);
   - Validate syntax
 - **AST Node Types**:
   - Program (root node)
-  - VariableDeclaration
-  - FunctionDeclaration
+  - NodeDeclaration (variable storage)
+  - ActionDeclaration (function-like blocks)
   - ExpressionStatement
   - BinaryExpression
   - CallExpression
-  - IfStatement
-  - WhileStatement
+  - CheckStatement (conditional)
+  - EachStatement (loop)
   - BlockStatement
 
 **File**: `src/parser.js`
@@ -78,11 +96,11 @@ let result = add(10, 20);
   - Tree-walking interpreter
   - Maintain execution context (scope/environment)
   - Evaluate expressions and execute statements
-  - Handle variable scoping (lexical scoping)
-  - Implement call stack for function calls
+  - Handle node scoping (lexical scoping)
+  - Implement call stack for action calls
 - **Features**:
   - Environment/Scope management
-  - Built-in function library
+  - Built-in action library
   - Error handling and reporting
   - Execution limits (prevent infinite loops)
 
@@ -159,20 +177,21 @@ export default defineNuxtPlugin(() => {
 ### Phase 4: Drag-and-Drop Visual Builder
 
 #### 4.1 Block-Based Interface
-- **Visual Programming Blocks**: Represent code constructs as draggable blocks
+- **Visual Programming Blocks**: Represent predetermined actions as draggable blocks (no coding required)
 - **Block Categories**:
-  - Variables (declare, assign, get)
+  - Nodes (store, assign, get values)
   - Operations (math, logic, string)
-  - Control Flow (if/else, loops)
-  - Functions (define, call)
+  - Checks (decision-making)
+  - Each (iterate over items)
+  - Actions (pre-defined operations)
   - Output (print, alert)
   
 #### 4.2 Block-to-Code Compiler
-- **Purpose**: Convert visual blocks to interpreter-compatible code
+- **Purpose**: Convert visual blocks to interpreter-compatible code (happens automatically)
 - **Implementation**:
-  - Each block type maps to a code template
-  - Nested blocks create nested code structures
-  - Serialize block tree to source code string
+  - Each block type maps to a predetermined template
+  - Nested blocks create nested structures
+  - Serialize block tree to executable code
 
 **File**: `src/visual/block-compiler.js`
 
@@ -201,19 +220,35 @@ components/
 
 #### 4.4 Block Definition System
 ```javascript
-// Block definition example
+// Block definition example (predetermined for users)
 const blocks = {
-  variable_declare: {
+  node_declare: {
     type: 'statement',
-    template: 'let {name} = {value};',
+    template: 'var {name} = {value};',
     inputs: ['name', 'value'],
-    color: '#4CAF50'
+    color: '#4CAF50',
+    label: 'Store Value in Node'
   },
   math_operation: {
     type: 'expression',
     template: '{left} {operator} {right}',
     inputs: ['left', 'operator', 'right'],
-    color: '#2196F3'
+    color: '#2196F3',
+    label: 'Calculate'
+  },
+  check_condition: {
+    type: 'statement',
+    template: 'check ({condition}) { {body} }',
+    inputs: ['condition', 'body'],
+    color: '#FF9800',
+    label: 'Check If'
+  },
+  each_loop: {
+    type: 'statement',
+    template: 'each ({item} in {list}) { {body} }',
+    inputs: ['item', 'list', 'body'],
+    color: '#9C27B0',
+    label: 'Each Item'
   },
   // ... more block definitions
 }
@@ -237,16 +272,16 @@ const blocks = {
 
 **File**: `src/sandbox.js`
 
-### Phase 6: Built-in Functions & Libraries
+### Phase 6: Built-in Actions & Libraries
 
-#### 6.1 Standard Library
-- **Math**: `abs()`, `sqrt()`, `pow()`, `min()`, `max()`, `random()`
-- **String**: `length()`, `substring()`, `indexOf()`, `toUpperCase()`, `toLowerCase()`
-- **Array**: `push()`, `pop()`, `slice()`, `map()`, `filter()`, `reduce()`
-- **Console**: `print()`, `log()`, `clear()`
+#### 6.1 Standard Action Library
+- **Math Actions**: `abs()`, `sqrt()`, `pow()`, `min()`, `max()`, `random()`
+- **String Actions**: `length()`, `substring()`, `indexOf()`, `toUpperCase()`, `toLowerCase()`
+- **Array Actions**: `push()`, `pop()`, `slice()`, `map()`, `filter()`, `reduce()`
+- **Console Actions**: `print()`, `log()`, `clear()`
 - **Type Conversion**: `toString()`, `toNumber()`, `toBoolean()`
 
-#### 6.2 Nuxt-Specific Functions
+#### 6.2 Nuxt-Specific Actions
 - **Data Fetching**: `fetch()`, `useFetch()`
 - **State Management**: `useState()`, `setGlobalState()`
 - **Navigation**: `navigateTo()`, `back()`
@@ -263,7 +298,7 @@ const blocks = {
 - Call stack visualization
 
 #### 7.2 Error Handling
-- Syntax error reporting with line numbers
+- Block configuration error reporting
 - Runtime error messages
 - Helpful error suggestions
 
@@ -283,8 +318,8 @@ const blocks = {
 **Framework**: Vitest or Jest
 
 #### 8.2 Documentation
-- API reference
-- Language syntax guide
+- Block reference guide
+- Visual builder tutorial
 - Block builder tutorial
 - Integration examples
 - Best practices
@@ -342,13 +377,14 @@ const blocks = {
 - [ ] Implement lexer with token recognition
 - [ ] Build parser with AST generation
 - [ ] Create interpreter with basic evaluation
-- [ ] Add support for variables, operators, and basic expressions
+- [ ] Add support for nodes (data storage), operators, and basic expressions
 - [ ] Write unit tests for each component
 
-### Milestone 2: Language Features (Weeks 4-5)
-- [ ] Add control flow (if/else, loops)
-- [ ] Implement functions (declaration, calls, returns)
-- [ ] Add built-in standard library functions
+### Milestone 2: Block Features (Weeks 4-5)
+- [ ] Add checks (decision-making blocks)
+- [ ] Add each loops (iteration blocks)
+- [ ] Implement actions (pre-defined operation blocks)
+- [ ] Add built-in action library
 - [ ] Implement proper scoping and environments
 - [ ] Add comprehensive error handling
 
@@ -416,9 +452,9 @@ import { PlutoInterpreter } from 'pluto';
 const pluto = new PlutoInterpreter();
 
 const code = `
-  let x = 10;
-  let y = 20;
-  let sum = x + y;
+  var x = 10;
+  var y = 20;
+  var sum = x + y;
   print("The sum is: " + sum);
 `;
 
@@ -432,7 +468,7 @@ console.log(result); // Output: "The sum is: 30"
 const { $pluto } = useNuxtApp();
 
 const code = ref(`
-  let greeting = "Hello from Pluto!";
+  var greeting = "Hello from Pluto!";
   print(greeting);
 `);
 
@@ -481,20 +517,20 @@ function executeBlocks() {
 
 ## 🎨 Visual Block Example
 
-A simple "Hello World" program in block form:
+A simple "Hello World" workflow using drag-and-drop blocks:
 ```
 ┌─────────────────────────────────┐
 │ Start Program                   │
 └────────────┬────────────────────┘
              │
 ┌────────────▼────────────────────┐
-│ Declare Variable                │
+│ Store Value in Node             │
 │ name: message                   │
 │ value: "Hello, World!"          │
 └────────────┬────────────────────┘
              │
 ┌────────────▼────────────────────┐
-│ Print                           │
+│ Print (Action)                  │
 │ value: message                  │
 └────────────┬────────────────────┘
              │
@@ -503,9 +539,11 @@ A simple "Hello World" program in block form:
 └─────────────────────────────────┘
 ```
 
+User simply drags and drops blocks, fills in "message" and "Hello, World!", then executes.
+
 This generates:
 ```javascript
-let message = "Hello, World!";
+var message = "Hello, World!";
 print(message);
 ```
 
