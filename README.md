@@ -221,6 +221,7 @@ components/
 #### 4.4 Block Definition System
 ```javascript
 // Block definition example (predetermined for users)
+// Users never see these templates - they just drag blocks and fill in inputs
 const blocks = {
   node_declare: {
     type: 'statement',
