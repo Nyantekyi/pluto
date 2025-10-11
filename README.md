@@ -186,12 +186,12 @@ data = stats([1, 2, 3, 4, 5]);
 ##### Check Return Values
 Checks automatically return boolean values:
 ```javascript
+// Boolean expression automatically returns true/false
 action isPositive(x) => [
-  check(x > 0) => true
-  else => false
+  x > 0;
 ]
 
-// Simplified - the check itself returns the boolean
+// Another example
 action isEven(x) => [
   x % 2 == 0;
 ]
