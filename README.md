@@ -30,7 +30,7 @@ That's it! No code writing needed.
 
 #### 1.1 Define the Block System
 - **Simple Operations**: Support basic operations (arithmetic, logical, string manipulation)
-- **Nodes (Data Storage)**: `var` keyword for storing values
+- **Nodes (Data Storage)**: Direct assignment for storing values (interpreter handles `var` internally)
 - **Checks (Conditions)**: `check` blocks for decision-making
 - **Each (Loops)**: `each` blocks for iterating over items
 - **Actions**: Pre-defined action blocks for common operations
@@ -39,20 +39,18 @@ That's it! No code writing needed.
 **Example Workflow:**
 ```javascript
 // Simple node (variable) assignment
-var x = 10;
-var y = x + 5;
+x = 10;
+y = x + 5;
 
 // Check (conditional)
-check (x > 5) {
-  print("x is greater than 5");
-}
+check(x > 5) => print("x is greater than 5")
 
 // Action (function)
-action add(a, b) {
+action add(a, b) => [
   return a + b;
-}
+]
 
-var result = add(10, 20);
+result = add(10, 20);
 ```
 
 #### 1.2 Lexer (Tokenizer)
@@ -62,11 +60,11 @@ var result = add(10, 20);
   - Identify keywords, identifiers, operators, literals, and symbols
   - Create token objects with type and value
 - **Token Types**: 
-  - Keywords (var, check, else, each, action, return)
+  - Keywords (check, else, each, action, return)
   - Identifiers (node/action names)
   - Literals (numbers, strings, booleans)
-  - Operators (+, -, *, /, =, ==, !=, <, >, &&, ||)
-  - Punctuation (;, {, }, (, ), ,)
+  - Operators (+, -, *, /, =, ==, !=, <, >, &&, ||, =>)
+  - Punctuation (;, {, }, (, ), ,, [, ])
 
 **File**: `src/lexer.js`
 
@@ -225,7 +223,7 @@ components/
 const blocks = {
   node_declare: {
     type: 'statement',
-    template: 'var {name} = {value};',
+    template: '{name} = {value};',
     inputs: ['name', 'value'],
     color: '#4CAF50',
     label: 'Store Value in Node'
@@ -239,14 +237,14 @@ const blocks = {
   },
   check_condition: {
     type: 'statement',
-    template: 'check ({condition}) { {body} }',
+    template: 'check({condition}) => {body}',
     inputs: ['condition', 'body'],
     color: '#FF9800',
     label: 'Check If'
   },
   each_loop: {
     type: 'statement',
-    template: 'each ({item} in {list}) { {body} }',
+    template: 'each({item} in {list}) => [{body}]',
     inputs: ['item', 'list', 'body'],
     color: '#9C27B0',
     label: 'Each Item'
@@ -453,9 +451,9 @@ import { PlutoInterpreter } from 'pluto';
 const pluto = new PlutoInterpreter();
 
 const code = `
-  var x = 10;
-  var y = 20;
-  var sum = x + y;
+  x = 10;
+  y = 20;
+  sum = x + y;
   print("The sum is: " + sum);
 `;
 
@@ -469,7 +467,7 @@ console.log(result); // Output: "The sum is: 30"
 const { $pluto } = useNuxtApp();
 
 const code = ref(`
-  var greeting = "Hello from Pluto!";
+  greeting = "Hello from Pluto!";
   print(greeting);
 `);
 
@@ -544,7 +542,7 @@ User simply drags and drops blocks, fills in "message" and "Hello, World!", then
 
 This generates:
 ```javascript
-var message = "Hello, World!";
+message = "Hello, World!";
 print(message);
 ```
 
