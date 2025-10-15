@@ -16,6 +16,8 @@ To make Pluto accessible to everyone, we use simplified terminology:
 | Perform an operation | **Action** | Function |
 | Make a decision | **Check** | If/Conditional |
 | Repeat for items | **Each** | For Loop |
+| Repeat for as long as Condition is true | **As** | While Loop |
+
 
 **Example**: To print "something" to the console:
 1. Drag the **Print action** block to the canvas
@@ -68,7 +70,15 @@ x = 10;
 y = x + 5;
 
 // Check (conditional) - implicitly returns boolean
-check(x > 5) => print("x is greater than 5")
+check(x > 5)
+  print("x is greater than 5")
+
+// As (while conditional)
+
+as(x>5)
+  print(x)
+  x+1
+  end
 
 // Action (function) - last expression is automatically returned
 action add(a, b) => [
