@@ -37,15 +37,15 @@ Pluto simplifies return values - you never need to write `return` statements!
 **Example:**
 ```javascript
 // This action automatically returns the result
-action double(x) => [
+action double(x)
   x * 2;
-]
+end
 
 // This action automatically returns an object with both values
-action splitName(fullName) => [
+action splitName(fullName)
   first = fullName.split(" ")[0];
   last = fullName.split(" ")[1];
-]
+end
 
 result = splitName("John Doe");
 // result = { first: "John", last: "Doe" }
@@ -70,29 +70,30 @@ x = 10;
 y = x + 5;
 
 // Check (conditional) - implicitly returns boolean
-check(x > 5)
+check (x > 5)
   print("x is greater than 5")
+end
 
 // As (while conditional)
 
-as(x>5)
+as (x>5)
   print(x)
   x+1
-  end
+end
 
 // Action (function) - last expression is automatically returned
-action add(a, b) => [
+action add(a, b)
   a + b;
-]
+end
 
 result = add(10, 20);
 
 // Action with multiple values - use simplified variable names
-action calculate(a, b) => [
+action calculate(a, b)
   sum = a + b;
   diff = a - b;
   prod = a * b;
-]
+end
 
 // Returns object with sum, diff, and prod properties
 results = calculate(10, 5);
@@ -105,10 +106,10 @@ results = calculate(10, 5);
   - Identify keywords, identifiers, operators, literals, and symbols
   - Create token objects with type and value
 - **Token Types**: 
-  - Keywords (check, else, each, action)
+  - Keywords (check, else, each, as, action, end)
   - Identifiers (node/action names)
   - Literals (numbers, strings, booleans)
-  - Operators (+, -, *, /, =, ==, !=, <, >, &&, ||, =>)
+  - Operators (+, -, *, /, =, ==, !=, <, >, &&, ||)
   - Punctuation (;, {, }, (, ), ,, [, ])
 
 **File**: `src/lexer.js`
@@ -128,7 +129,8 @@ results = calculate(10, 5);
   - BinaryExpression
   - CallExpression
   - CheckStatement (conditional with implicit boolean return)
-  - EachStatement (loop)
+  - AsStatement (while loop)
+  - EachStatement (for loop)
   - BlockStatement
 
 **File**: `src/parser.js`
@@ -159,9 +161,9 @@ results = calculate(10, 5);
 ##### Single Value Return (Implicit)
 ```javascript
 // The last expression is automatically returned
-action square(x) => [
+action square(x)
   x * x;
-]
+end
 
 result = square(5);  // result = 25
 ```
@@ -170,11 +172,11 @@ result = square(5);  // result = 25
 When multiple variables are assigned within an action, they are automatically collected and returned as an object:
 
 ```javascript
-action calculate(a, b) => [
+action calculate(a, b)
   sum = a + b;
   diff = a - b;
   prod = a * b;
-]
+end
 
 results = calculate(10, 5);
 // results = { sum: 15, diff: 5, prod: 50 }
@@ -182,12 +184,12 @@ results = calculate(10, 5);
 
 Variable names are used as-is from the action body. Use simplified, descriptive names:
 ```javascript
-action stats(numbers) => [
+action stats(numbers)
   total = sum(numbers);
   avg = total / length(numbers);
   max = maximum(numbers);
   min = minimum(numbers);
-]
+end
 
 data = stats([1, 2, 3, 4, 5]);
 // data = { total: 15, avg: 3, max: 5, min: 1 }
@@ -197,14 +199,14 @@ data = stats([1, 2, 3, 4, 5]);
 Checks automatically return boolean values:
 ```javascript
 // Action automatically returns the boolean result
-action isPositive(x) => [
+action isPositive(x)
   x > 0;
-]
+end
 
 // Another example - returns true if even, false if odd
-action isEven(x) => [
+action isEven(x)
   x % 2 == 0;
-]
+end
 
 result = isEven(4);  // result = true
 ```
@@ -342,14 +344,14 @@ const blocks = {
   },
   check_condition: {
     type: 'statement',
-    template: 'check({condition}) => {body}',
+    template: 'check ({condition}) {body} end',
     inputs: ['condition', 'body'],
     color: '#FF9800',
     label: 'Check If'
   },
   each_loop: {
     type: 'statement',
-    template: 'each({item} in {list}) => [{body}]',
+    template: 'each ({item} in {list}) {body} end',
     inputs: ['item', 'list', 'body'],
     color: '#9C27B0',
     label: 'Each Item'
@@ -396,17 +398,21 @@ const blocks = {
 **Example Built-in Action Implementations:**
 ```javascript
 // Single return value
-action abs(x) => [
-  check(x < 0) => -x
-  else => x
-]
+action abs(x)
+  check (x < 0)
+    -x
+  end
+  else
+    x
+  end
+end
 
 // Multiple return values
-action minMax(arr) => [
+action minMax(arr)
   min = minimum(arr);
   max = maximum(arr);
   range = max - min;
-]
+end
 
 // Usage
 limits = minMax([1, 5, 3, 9, 2]);
