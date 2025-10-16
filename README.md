@@ -38,16 +38,16 @@ Pluto simplifies return values - you never need to write `return` statements!
 ```javascript
 // This action automatically returns the result
 action double(x)
-  x * 2;
+  x * 2
 end
 
 // This action automatically returns an object with both values
 action splitName(fullName)
-  first = fullName.split(" ")[0];
-  last = fullName.split(" ")[1];
+  first = fullName.split(" ")[0]
+  last = fullName.split(" ")[1]
 end
 
-result = splitName("John Doe");
+result = splitName("John Doe")
 // result = { first: "John", last: "Doe" }
 ```
 
@@ -66,8 +66,8 @@ result = splitName("John Doe");
 **Example Workflow:**
 ```javascript
 // Simple node (variable) assignment
-x = 10;
-y = x + 5;
+x = 10
+y = x + 5
 
 // Check (conditional) - implicitly returns boolean
 check (x > 5)
@@ -83,20 +83,20 @@ end
 
 // Action (function) - last expression is automatically returned
 action add(a, b)
-  a + b;
+  a + b
 end
 
-result = add(10, 20);
+result = add(10, 20)
 
 // Action with multiple values - use simplified variable names
 action calculate(a, b)
-  sum = a + b;
-  diff = a - b;
-  prod = a * b;
+  sum = a + b
+  diff = a - b
+  prod = a * b
 end
 
 // Returns object with sum, diff, and prod properties
-results = calculate(10, 5);
+results = calculate(10, 5)
 ```
 
 #### 1.2 Lexer (Tokenizer)
@@ -110,7 +110,7 @@ results = calculate(10, 5);
   - Identifiers (node/action names)
   - Literals (numbers, strings, booleans)
   - Operators (+, -, *, /, =, ==, !=, <, >, &&, ||)
-  - Punctuation (;, {, }, (, ), ,, [, ])
+  - Punctuation (, {, }, (, ), ,, [, ])
 
 **File**: `src/lexer.js`
 
@@ -162,10 +162,10 @@ results = calculate(10, 5);
 ```javascript
 // The last expression is automatically returned
 action square(x)
-  x * x;
+  x * x
 end
 
-result = square(5);  // result = 25
+result = square(5)  // result = 25
 ```
 
 ##### Multiple Value Return
@@ -173,25 +173,25 @@ When multiple variables are assigned within an action, they are automatically co
 
 ```javascript
 action calculate(a, b)
-  sum = a + b;
-  diff = a - b;
-  prod = a * b;
+  sum = a + b
+  diff = a - b
+  prod = a * b
 end
 
-results = calculate(10, 5);
+results = calculate(10, 5)
 // results = { sum: 15, diff: 5, prod: 50 }
 ```
 
 Variable names are used as-is from the action body. Use simplified, descriptive names:
 ```javascript
 action stats(numbers)
-  total = sum(numbers);
-  avg = total / length(numbers);
-  max = maximum(numbers);
-  min = minimum(numbers);
+  total = sum(numbers)
+  avg = total / length(numbers)
+  max = maximum(numbers)
+  min = minimum(numbers)
 end
 
-data = stats([1, 2, 3, 4, 5]);
+data = stats([1, 2, 3, 4, 5])
 // data = { total: 15, avg: 3, max: 5, min: 1 }
 ```
 
@@ -200,15 +200,15 @@ Checks automatically return boolean values:
 ```javascript
 // Action automatically returns the boolean result
 action isPositive(x)
-  x > 0;
+  x > 0
 end
 
 // Another example - returns true if even, false if odd
 action isEven(x)
-  x % 2 == 0;
+  x % 2 == 0
 end
 
-result = isEven(4);  // result = true
+result = isEven(4)  // result = true
 ```
 
 ### Phase 2: Browser & Node.js Compatibility
@@ -330,7 +330,7 @@ components/
 const blocks = {
   node_declare: {
     type: 'statement',
-    template: '{name} = {value};',
+    template: '{name} = {value}',
     inputs: ['name', 'value'],
     color: '#4CAF50',
     label: 'Store Value in Node'
@@ -409,13 +409,13 @@ end
 
 // Multiple return values
 action minMax(arr)
-  min = minimum(arr);
-  max = maximum(arr);
-  range = max - min;
+  min = minimum(arr)
+  max = maximum(arr)
+  range = max - min
 end
 
 // Usage
-limits = minMax([1, 5, 3, 9, 2]);
+limits = minMax([1, 5, 3, 9, 2])
 // limits = { min: 1, max: 9, range: 8 }
 ```
 
@@ -579,38 +579,38 @@ limits = minMax([1, 5, 3, 9, 2]);
 
 ### Basic JavaScript API
 ```javascript
-import { PlutoInterpreter } from 'pluto';
+import { PlutoInterpreter } from 'pluto'
 
-const pluto = new PlutoInterpreter();
+const pluto = new PlutoInterpreter()
 
 const code = `
-  x = 10;
-  y = 20;
-  sum = x + y;
-  print("The sum is: " + sum);
-`;
+  x = 10
+  y = 20
+  sum = x + y
+  print("The sum is: " + sum)
+`
 
-const result = pluto.execute(code);
-console.log(result); // Output: "The sum is: 30"
+const result = pluto.execute(code)
+console.log(result) // Output: "The sum is: 30"
 ```
 
 ### Nuxt 4 Integration
 ```vue
 <script setup>
-const { $pluto } = useNuxtApp();
+const { $pluto } = useNuxtApp()
 
 const code = ref(`
-  greeting = "Hello from Pluto!";
-  print(greeting);
-`);
+  greeting = "Hello from Pluto!"
+  print(greeting)
+`)
 
-const output = ref('');
+const output = ref('')
 
 function runCode() {
   try {
-    output.value = $pluto.execute(code.value);
+    output.value = $pluto.execute(code.value)
   } catch (error) {
-    output.value = `Error: ${error.message}`;
+    output.value = `Error: ${error.message}`
   }
 }
 </script>
@@ -627,14 +627,14 @@ function runCode() {
 ### Visual Builder Usage
 ```vue
 <script setup>
-import { BlockWorkspace, BlockPalette, ExecutionPanel } from 'pluto/visual';
+import { BlockWorkspace, BlockPalette, ExecutionPanel } from 'pluto/visual'
 
-const workspace = ref(null);
+const workspace = ref(null)
 
 function executeBlocks() {
-  const code = workspace.value.generateCode();
-  const result = $pluto.execute(code);
-  console.log(result);
+  const code = workspace.value.generateCode()
+  const result = $pluto.execute(code)
+  console.log(result)
 }
 </script>
 
@@ -675,8 +675,8 @@ User simply drags and drops blocks, fills in "message" and "Hello, World!", then
 
 This generates:
 ```javascript
-message = "Hello, World!";
-print(message);
+message = "Hello, World!"
+print(message)
 ```
 
 ## 🤝 Contributing
