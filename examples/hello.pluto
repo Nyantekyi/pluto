@@ -1,0 +1,35 @@
+// Hello World in Pluto
+
+message = "Hello, Pluto!"
+print(message)
+
+// Calculate factorial using recursion
+action factorial(n)
+  check (n <= 1)
+    1
+  else
+    n * factorial(n - 1)
+  end
+end
+
+print("Factorial of 5:", factorial(5))
+
+// Sum array elements
+numbers = [1, 2, 3, 4, 5]
+total = 0
+each (num in numbers)
+  total = total + num
+end
+
+print("Sum of", numbers, "is", total)
+
+// Action with multiple return values
+action stats(arr)
+  min = minimum(arr)
+  max = maximum(arr)
+  avg = average(arr)
+  total = sum(arr)
+end
+
+result = stats(numbers)
+print("Statistics:", result)

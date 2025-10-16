@@ -6,6 +6,9 @@
   "main": "./dist/pluto.node.js",
   "module": "./dist/pluto.esm.js",
   "browser": "./dist/pluto.browser.js",
+  "bin": {
+    "pluto": "./cli.js"
+  },
   "exports": {
     ".": {
       "import": "./dist/pluto.esm.js",
